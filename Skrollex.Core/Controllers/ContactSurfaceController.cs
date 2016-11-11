@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Skrollex.Core.Models;
+using System;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using Umbraco.Web.WebApi;
+using Umbraco.Core;
+using Umbraco.Core.Models;
 using Umbraco.Core.Services;
-using Skrollex.Core.Models;
 using Umbraco.Web.Mvc;
 
 namespace Skrollex.Core.Controllers
@@ -20,30 +19,33 @@ namespace Skrollex.Core.Controllers
         [HttpPost]
         public ActionResult CreateContact(ContactFormViewModel model)
         {
-            //model not valid, do not save, but return current Umbraco page
             //if (!ModelState.IsValid)
             //{
-            //    //Perhaps you might want to add a custom message to the ViewBag
-            //    //which will be available on the View when it renders (since we're not 
-            //    //redirecting)          
+            //    TempData.Add("ValidationMessage", "Please complete the form");
             //    return CurrentUmbracoPage();
             //}
 
-            //if validation passes perform whatever logic
-            //In this sample we keep it empty, but try setting a breakpoint to see what is posted here
+            var cs = Services.ContentService;
+            var cts = Services.ContentTypeService;
 
-            //Perhaps you might want to store some data in TempData which will be available 
-            //in the View after the redirect below. An example might be to show a custom 'submit
-            //successful' message on the View, for example:
-            TempData.Add("CustomMessage", "Your form was successfully submitted at " + DateTime.Now);
+            // Get the Id of the Contact Doc Type
+            var contactType = cts.GetContentType("Contact");
 
-            //redirect to current page to clear the form
+            // Get the Contact page
+            var contactPage = cs.GetContentOfContentType(contactType.Id).FirstOrDefault();
+
+            var newContactItem = cs.CreateContent(model.Name, contactPage.Id, "contactItem");
+
+            newContactItem.SetValue("contactName", model.Name);
+            newContactItem.SetValue("email", model.Email);
+            newContactItem.SetValue("message", model.Message);
+
+            cs.Save(newContactItem);
+
+            // TempData.Add("CustomMessage", "Your form was successfully submitted at " + DateTime.Now);
+
             return RedirectToCurrentUmbracoPage();
 
-            //Or redirect to specific page
-            //return RedirectToUmbracoPage(12345)
         }
-
-
     }
 }

@@ -1,23 +1,31 @@
 ﻿@model Skrollex.Core.Models.ContactFormViewModel
 
-@using (Html.BeginUmbracoForm("CreateContact", "ContactFormSurface"))
+@if (TempData["success"] == null)
 {
-    <div class="row">
-        <div class="col-md-6 control-group">
-            <div class="alt-placeholder">Name</div>
-            @Html.TextBoxFor(m => m.Name, new { name = "Name", data_validation_required_message = "Please fill the required field." })
-            <div class="help-block"></div>
+
+    using (Html.BeginUmbracoForm("CreateContact", "ContactFormSurface"))
+    {
+        <div class="row">
+            <div class="col-md-6 control-group">
+                <div class="alt-placeholder">Name</div>
+                @Html.TextBoxFor(m => m.Name, new { name = "Name", data_validation_required_message = "Please fill the required field." })
+                <div class="help-block"></div>
+            </div>
+            <div class="col-md-6 control-group">
+                @Html.TextBoxFor(m => m.Email, new { name = "Email", data_validation_required_message = "Please fill the required field." })
+                <div class="help-block"></div>
+            </div>
+            <div class="col-md-12 control-group">
+                @Html.TextBoxFor(m => m.Message, new { name = "Message", data_validation_required_message = "Please fill the required field." })
+                <div class="help-block"></div>
+            </div>
+            <div class="col-md-12 form-actions">
+                <input class="button" type="submit" value="Send">
+            </div>
         </div>
-        <div class="col-md-6 control-group">
-            @Html.TextBoxFor(m => m.Email, new { name = "Email", data_validation_required_message = "Please fill the required field." })
-            <div class="help-block"></div>
-        </div>
-        <div class="col-md-12 control-group">
-            @Html.TextBoxFor(m => m.Message, new { name = "Message", data_validation_required_message = "Please fill the required field." })
-            <div class="help-block"></div>
-        </div>
-        <div class="col-md-12 form-actions">
-            <input class="button" type="submit" value="Send">
-        </div>
-    </div>
+    }
+}
+else
+{
+    <p>Thanks!</p>
 }
